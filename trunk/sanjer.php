@@ -31,7 +31,7 @@
 // oh, and it comes with no warranties.
 //
 //
-// Author: Omer Yariv       omer.on.the.road@gmail.com
+// Author: Omer Yariv       omm@users.berlios.de
 //
 /////////////////////////////////////////////////////////////
 
