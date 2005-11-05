@@ -1,5 +1,10 @@
 <?php
 
+	if (isset($_REQUEST['show_source'])) {
+		highlight_file(__FILE__);
+		exit;
+	}
+
 // This file contains only the server side functions and the SANJER
 
   require_once("sanjer.php");
