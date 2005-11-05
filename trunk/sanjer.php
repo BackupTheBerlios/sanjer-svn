@@ -1,4 +1,8 @@
 <?php
+  header("Cache-control: private");
+  require_once("Sajax.php");
+  require_once("JSON.php");
+
 
 /////////////////////////////////////////////////////////////
 // SANJER (SAjax aNd Json wrappER) is a wrapper class
@@ -31,204 +35,30 @@
 // oh, and it comes with no warranties.
 //
 //
-// Author: Omer Yariv       omm@users.berlios.de
+// Author: Omer Yariv       omer.on.the.road@gmail.com
 //
 /////////////////////////////////////////////////////////////
 
 
-  header("Cache-control: private");
-
-  require_once("Sajax.php");
-  require_once("JSON.php");
-
-class SANJER{
-
-  var $json;
-  var $sajax;
-  var $isListening;
-
-///////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////// 
 //
-//  function SANJER()
-//  description:
-//      constructor.
-//  accepts:
-//      $requestType:   string, optional, default: "GET". The HTTP Type of request.
-//      $functionsArr:  array of strings, optional, default:NULL. the names of the functions to register with sajax
-//      $remoteUri:     string, optional, default: empty. For use in case the functions AJAX calls are not on the same file as the callers.
-//  returns:
-//      pointer to object.
+// This part is here to take some of the JS out of the source
+// of the rendered HTML file. Instead of dumping all the JS
+// onto the <script> tag at the header, show_javascript() will
+// create a <link> tag pointing back to this file, with the
+// "show_common_javascript" addition.
 //
-// Important note: if the functions to register are not given in the constructor,
-//                  then first register() and then start_listening() must be called, manually,
-//                  in order for the sajax to work properly.
-///////////////////////////////////////////////////////////////
-  function SANJER($requestType="GET", $functionsArr=NULL, $remoteUri=""){
-    $this->isListening = false;
-    $this->json = new JSON();
-    if(!$this->json){
-        die("could not create JSON object");
-    }
-
-    $this->sajax = new SAJAX($requestType, $remoteUri);
-    $this->sajax->sajax_init();
+///////////////////////////////////////////////////////////// 
+if (isset($_REQUEST["show_common_javascript"])) {
+    $sajax = new SAJAX($_GET["request_type"], $_GET["remote_uri"]);
+    $sajax->sajax_debug_mode = $_GET["debug_mode"];
+    $sajax->sajax_show_javascript();
     
-    if($functionsArr){
-      foreach($functionsArr as $functionName){
-        $this->register($functionName);
-      }
-    }
-
-  }
-
-
-///////////////////////////////////////////////////////////////
-//
-//  function restart()
-//  description: creates new sajax and json objects,
-//               and switches the isListening flag off.
-//
-//  accepts:
-//      $requestType:   string, optional, default: "GET". The HTTP Type of request.
-//      $functionsArr:  array of strings, optional, default:NULL. the names of the functions to register with sajax
-//      $remoteUri:     string, optional, default: empty. For use in case the functions AJAX calls are not on the same file as the callers.
-//  returns:
-//      nothing.
-///////////////////////////////////////////////////////////////
-  function restart($requestType="GET", $functionsArr=NULL, $remoteUri=""){
-    if(isset($this->sajax)) unset($this->sajax);
-    if(isset($this->json)) unset($this->json);
-
-    $this->isListening = false;
-    $this->json = new JSON();
-    if(!$this->json){
-        die("could not create JSON object");
-    }
-
-    $this->sajax = new SAJAX($requestType, $remoteUri);
-    $this->sajax->sajax_init();
-
-    if($functionsArr){
-      foreach($functionsArr as $functionName){
-        $this->register($functionName);
-      }
-    }
-    
-  }
-
-
-    
-///////////////////////////////////////////////////////////////
-//
-//  function set_debug_mode()
-//  description: sets the sajax debug mode.
-//               JSON doesn't have one.
-//
-//  accepts:
-//      $mode:  boolean, optional, default: true. the debug mode: true/false -> on/off.
-//
-//  returns:
-//      nothing.
-///////////////////////////////////////////////////////////////
-  function set_debug_mode($mode=true){
-      $this->sajax->sajax_debug_mode = $mode ? 1 : 0;
-  }
-
-
-///////////////////////////////////////////////////////////////
-//
-//  function register()
-//  description:
-//      registers the functions that will work with sajax.
-//      a function must be registered to be called by a HTTPRequest.
-//
-//  accepts:
-//      $functionName:  string, mandatory. Name of function to be registered.
-//
-//  returns:
-//      boolean signifying success of registration
-///////////////////////////////////////////////////////////////
-  function register($functionName){
-    $this->sajax->sajax_export($functionName);
-  }
-
-///////////////////////////////////////////////////////////////
-//
-//  function start_listening()
-//  description:
-//      gets the Sajax to handle HTTPRequests
-//  accepts:
-//
-//  returns:
-//
-///////////////////////////////////////////////////////////////
-  function start_listening(){
-    if(!$this->isListening){
-        $this->sajax->sajax_handle_client_request();
-        $this->isListening = true;
-    } 
-  }
-
-///////////////////////////////////////////////////////////////
-//
-//  function json2object()
-//  description:
-//      takes JSON encoded text and decodes it into a PHP object.
-//
-//  accepts:
-//      $encodedData:   string, mandatory. The JSON encoding of the data.
-//      $stripSlashes:  boolean, optional, default: true. Whether to data string requires slash stripping.
-//  returns:
-//      PHP object to match the object encoded in JSON string.
-///////////////////////////////////////////////////////////////
-  function json2object($encodedData, $stripSlashes=true){
-
-    $decodedObject = NULL;
-
-    if($stripSlashes){
-        $decodedObject = $this->json->decode(stripslashes($encodedData));
-    } else {
-        $decodedObject = $this->json->decode($encodedData);
-    }
-
-
-
-    return $decodedObject;
-
-  }
-
-///////////////////////////////////////////////////////////////
-//
-//  function object2json()
-//  description:
-//      encodes a given PHP object into a JSON compatible string.
-//  accepts:
-//      $phpObject: object, mandatory. object to be encoded.
-//  returns:
-//      string encoding of the object.
-///////////////////////////////////////////////////////////////
-  function object2json($phpObject){
-      $inJson = $this->json->encode($phpObject);   
-    return $inJson;
-  }
-
-
-///////////////////////////////////////////////////////////////
-//
-//  function show_javascript()
-//  description:
-//      wrapper for Sajax's sajax_show_javascript function
-//  accepts:
-//      
-//  returns:
-//      javascript preparing sajax for work
-///////////////////////////////////////////////////////////////
-  function show_javascript(){
-ob_start();
+    ob_start();
 ?>
-
-        
-  
+/////////////////////////////////////////////////////
+///         Start SANJER automatically created JS       
+/////////////////////////////////////////////////////  
 function SANJER(){
     
     this.object2json = function (theObject){    
@@ -237,6 +67,17 @@ function SANJER(){
 
     this.json2object = function (jsonString){
         return this.JSON.parse(jsonString);
+    };
+    
+    this.call_function = function (){
+        var functionToCall = eval("x_" + this.call_function.arguments[0]);
+        var functionArgs = "";
+        for(i = 1; i < this.call_function.arguments.length; i++){
+          functionArgs += this.call_function.arguments[i] + ", ";  
+        }
+        // removing the last ", ";
+        functionArgs = functionArgs.substring(0, functionArgs.lastIndexOf(","));  
+        functionToCall(functionArgs);
     };
       
 /*
@@ -536,11 +377,230 @@ SAJAX code by sajax.php on http://www.modernmethod.com/sajax/
     }  
     
 };
+
+    // This is the global JS SANJER object, and it's all you'll need.
+    var sanjer = new SANJER();
+
 <?PHP
-    $jsFunctions = ob_get_contents();  
+        $jsText = ob_get_contents();  
+        ob_end_clean();
+        echo $jsText;
+
+        ob_start();
+?>
+
+/////////////////////////////////////////////////////
+///         End SANJER automatically created JS       
+/////////////////////////////////////////////////////  
+
+<?PHP
+        $jsText = ob_get_contents();  
+        ob_end_clean();
+        echo $jsText;  
+         		
+		exit;
+	}
+
+
+
+class SANJER{
+
+  var $json;
+  var $sajax;
+  var $isListening;
+
+///////////////////////////////////////////////////////////////
+//
+//  function SANJER()
+//  description:
+//      constructor.
+//  accepts:
+//      $requestType:   string, optional, default: "GET". The HTTP Type of request.
+//      $functionsArr:  array of strings, optional, default:NULL. the names of the functions to register with sajax
+//      $remoteUri:     string, optional, default: empty. For use in case the functions AJAX calls are not on the same file as the callers.
+//  returns:
+//      pointer to object.
+//
+// Important note: if the functions to register are not given in the constructor,
+//                  then first register() and then start_listening() must be called, manually,
+//                  in order for the sajax to work properly.
+///////////////////////////////////////////////////////////////
+  function SANJER($requestType="GET", $functionsArr=NULL, $remoteUri=""){
+    $this->isListening = false;
+    $this->json = new JSON();
+    if(!$this->json){
+        die("could not create JSON object");
+    }
+
+    $this->sajax = new SAJAX($requestType, $remoteUri);
+    $this->sajax->sajax_js_has_been_shown = 1;
+    $this->sajax->sajax_init();
+    
+    if($functionsArr){
+      foreach($functionsArr as $functionName){
+        $this->register($functionName);
+      }
+    }
+
+  }
+
+
+///////////////////////////////////////////////////////////////
+//
+//  function restart()
+//  description: creates new sajax and json objects,
+//               and switches the isListening flag off.
+//
+//  accepts:
+//      $requestType:   string, optional, default: "GET". The HTTP Type of request.
+//      $functionsArr:  array of strings, optional, default:NULL. the names of the functions to register with sajax
+//      $remoteUri:     string, optional, default: empty. For use in case the functions AJAX calls are not on the same file as the callers.
+//  returns:
+//      nothing.
+///////////////////////////////////////////////////////////////
+  function restart($requestType="GET", $functionsArr=NULL, $remoteUri=""){
+    if(isset($this->sajax)) unset($this->sajax);
+    if(isset($this->json)) unset($this->json);
+
+    $this->isListening = false;
+    $this->json = new JSON();
+    if(!$this->json){
+        die("could not create JSON object");
+    }
+
+    $this->sajax = new SAJAX($requestType, $remoteUri);
+    $this->sajax->sajax_init();
+
+    if($functionsArr){
+      foreach($functionsArr as $functionName){
+        $this->register($functionName);
+      }
+    }
+    
+  }
+
+
+    
+///////////////////////////////////////////////////////////////
+//
+//  function set_debug_mode()
+//  description: sets the sajax debug mode.
+//               JSON doesn't have one.
+//
+//  accepts:
+//      $mode:  boolean, optional, default: true. the debug mode: true/false -> on/off.
+//
+//  returns:
+//      nothing.
+///////////////////////////////////////////////////////////////
+  function set_debug_mode($mode=true){
+      $this->sajax->sajax_debug_mode = $mode ? 1 : 0;
+  }
+
+
+///////////////////////////////////////////////////////////////
+//
+//  function register()
+//  description:
+//      registers the functions that will work with sajax.
+//      a function must be registered to be called by a HTTPRequest.
+//
+//  accepts:
+//      $functionName:  string, mandatory. Name of function to be registered.
+//
+//  returns:
+//      boolean signifying success of registration
+///////////////////////////////////////////////////////////////
+  function register($functionName){
+    $this->sajax->sajax_export($functionName);
+  }
+
+///////////////////////////////////////////////////////////////
+//
+//  function start_listening()
+//  description:
+//      gets the Sajax to handle HTTPRequests
+//  accepts:
+//
+//  returns:
+//
+///////////////////////////////////////////////////////////////
+  function start_listening(){
+    if(!$this->isListening){
+        $this->sajax->sajax_handle_client_request();
+        $this->isListening = true;
+    } 
+  }
+
+///////////////////////////////////////////////////////////////
+//
+//  function json2object()
+//  description:
+//      takes JSON encoded text and decodes it into a PHP object.
+//
+//  accepts:
+//      $encodedData:   string, mandatory. The JSON encoding of the data.
+//      $stripSlashes:  boolean, optional, default: true. Whether to data string requires slash stripping.
+//  returns:
+//      PHP object to match the object encoded in JSON string.
+///////////////////////////////////////////////////////////////
+  function json2object($encodedData, $stripSlashes=true){
+
+    $decodedObject = NULL;
+
+    if($stripSlashes){
+        $decodedObject = $this->json->decode(stripslashes($encodedData));
+    } else {
+        $decodedObject = $this->json->decode($encodedData);
+    }
+
+
+
+    return $decodedObject;
+
+  }
+
+///////////////////////////////////////////////////////////////
+//
+//  function object2json()
+//  description:
+//      encodes a given PHP object into a JSON compatible string.
+//  accepts:
+//      $phpObject: object, mandatory. object to be encoded.
+//  returns:
+//      string encoding of the object.
+///////////////////////////////////////////////////////////////
+  function object2json($phpObject){
+      $inJson = $this->json->encode($phpObject);   
+    return $inJson;
+  }
+
+
+///////////////////////////////////////////////////////////////
+//
+//  function show_javascript()
+//  description:
+//      wrapper for Sajax's sajax_show_javascript function
+//  accepts:
+//      
+//  returns:
+//      javascript preparing sajax for work
+///////////////////////////////////////////////////////////////
+  function show_javascript(){
+
+
+    ob_start();
+?>
+    <script type="text/javascript" src="<?= basename($_SERVER['PHP_SELF']); ?>?show_common_javascript=1&request_type=<?= $this->sajax->sajax_request_type?>&debug_mode=<?= $this->sajax->sajax_debug_mode?>&remote_uri=<?= $this->sajax->sajax_remote_uri?>"></script>
+    <script type="text/javascript">
+<?PHP
+    $jsText = ob_get_contents();
     ob_end_clean();
-    echo $jsFunctions;
-    return $this->sajax->sajax_show_javascript(); ;
+    echo $jsText;
+
+    $this->sajax->sajax_show_javascript();  
+    echo "</script>\n";
+    return;
   }
 
 ///////////////////////////////////////////////////////////////
