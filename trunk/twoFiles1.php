@@ -1,6 +1,5 @@
 <?php
 
-
 	if (isset($_REQUEST['show_source'])) {
 		highlight_file(__FILE__);
 		exit;
@@ -27,15 +26,11 @@
 <meta HTTP-EQUIV="CONTENT-TYPE" CONTENT="TEXT/HTML; CHARSET=WINDOWS-1255">
 	<title>Sajax + JSON test</title>
     <LINK REL=StyleSheet HREF="sanjer.css" TYPE="text/css" MEDIA=screen> 
-	<script type="text/javascript">
-    
-    
 	<?
 // This function will create all the JS you need to get it to work.
 	$sanjer->show_javascript();
 	?>
-	// This is the global JS SANJER object, and it's all you'll need.
-    var sanjer = new SANJER();  
+	<script type="text/javascript">
     
 	function justAddLineBreaks(text){
         return text.replace(/(\n)/g, "<br />$1");
@@ -88,6 +83,5 @@ The counter is sent as well and incremented in the server.<BR />
  
  <p><a href="<?= $_SERVER['PHP_SELF'] ?>?show_source">See the PHP source of this file</a></p>
  <p><a href="twoFiles2.php?show_source">See the PHP source of the file containing the PHP function</a></p>
- 
 </body>
 </html>
