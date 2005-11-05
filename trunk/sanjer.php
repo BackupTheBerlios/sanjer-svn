@@ -69,15 +69,14 @@ function SANJER(){
         return this.JSON.parse(jsonString);
     };
     
-    this.call_function = function (){
-        var functionToCall = eval("x_" + this.call_function.arguments[0]);
-        var functionArgs = "";
-        for(i = 1; i < this.call_function.arguments.length; i++){
-          functionArgs += this.call_function.arguments[i] + ", ";  
+    this.call_function = function (functionToCall){
+
+        var args = new Array();
+        for(i=1;i < this.call_function.arguments.length;++i) {
+          args.push(this.call_function.arguments[i]);
         }
-        // removing the last ", ";
-        functionArgs = functionArgs.substring(0, functionArgs.lastIndexOf(","));  
-        functionToCall(functionArgs);
+        var callString = "sajax_do_call(this.call_function.arguments[0], args)";
+        eval(callString);
     };
       
 /*
@@ -598,7 +597,7 @@ class SANJER{
     ob_end_clean();
     echo $jsText;
 
-    $this->sajax->sajax_show_javascript();  
+//    $this->sajax->sajax_show_javascript();
     echo "</script>\n";
     return;
   }
