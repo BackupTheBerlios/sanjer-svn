@@ -53,7 +53,8 @@
 		dataToSend.text = encodeURI(document.getElementById("callRemote").value);
 		try{
             //the data sent to the server function is encoded into JSON
-    		x_boomerang(sanjer.object2json(dataToSend), call_remote_php_cb);
+            //SANJER's call_function() is used to call the backend function
+            sanjer.call_function("boomerang", sanjer.object2json(dataToSend), call_remote_php_cb);
 		} catch (e) {
             alert(e.message);
         }
