@@ -21,21 +21,14 @@
 //  so there is no need to include it anywhere.
 //
 // Usage: 
-//  - include this file both where your caller (JS) and called (PHP) functions are located. 
-//  - create a new SANJER object
-//  - if the function names were not passed in the constructor, pass the through the register() function
-//  - call the SANJER object's start_listening() function
-//  - on the JS file, add create a HTML javascript script tag, and call the PHP SANJER's show_javascript()
-//      function from it.
-//
-//  see usage example in sanjertest.php and sanjerhello.php
+//  see usage example in oneFile.php and twoFiles1.php & twoFiles2.php
 //
 // License Information:
 // Do whatever you want with it, just do good.
 // oh, and it comes with no warranties.
 //
 //
-// Author: Omer Yariv       omer.on.the.road@gmail.com
+// Author: Omer Yariv       omm@users.berlios.de
 //
 /////////////////////////////////////////////////////////////
 
@@ -44,7 +37,7 @@
 //
 // This part is here to take some of the JS out of the source
 // of the rendered HTML file. Instead of dumping all the JS
-// onto the <script> tag at the header, show_javascript() will
+// onto the header and cluttering the source, show_javascript() will
 // create a <link> tag pointing back to this file, with the
 // "show_common_javascript" addition.
 //

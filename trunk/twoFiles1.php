@@ -84,5 +84,7 @@ The counter is sent as well and incremented in the server.<BR />
  
  <p><a href="<?= $_SERVER['PHP_SELF'] ?>?show_source">See the PHP source of this file</a></p>
  <p><a href="twoFiles2.php?show_source">See the PHP source of the file containing the PHP function</a></p>
+ <p>I also suggest using your browser to view the HTML source of this page,<BR />
+ and see how uncluttered it is.</p>
 </body>
 </html>
